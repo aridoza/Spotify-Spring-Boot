@@ -33,30 +33,32 @@ public class User {
     @JoinColumn(name="user_role_id", nullable = false)
     private UserRole userRole;
 
-    public List<Course> getCourses() {
-        return courses;
-    }
 
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
-    }
-
-    public List<Course> addCourse(Course course){
-        if(courses == null)
-            courses = new ArrayList<>();
-        courses.add(course);
-
-        return courses;
+    public List<Song> addSong(Song song) {
+        if (songs == null)
+            songs = new ArrayList<>();
+        songs.add(song);
+        return songs;
     }
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.DETACH,
-                    CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "user_course",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = @JoinColumn(name = "course_id"),
-            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "course_id"}))
-    private List<Course> courses;
+        cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+        })
+    @JoinTable(name="user_song",
+        joinColumns = {@JoinColumn(name="user_id")},
+        inverseJoinColumns = {@JoinColumn(name="song_id")},
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "song_id"})
+    )
+    private List<Song> songs;
+
+    public List<Song> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
+    }
 
     public UserRole getUserRole() {
         return userRole;

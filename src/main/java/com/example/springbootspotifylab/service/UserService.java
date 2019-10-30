@@ -10,5 +10,5 @@ public interface UserService {
 
     public User createUser(User user);
 
-    public User addCourse(String username, Long courseId);
+    public User addSong(String username, Long songId);
 }

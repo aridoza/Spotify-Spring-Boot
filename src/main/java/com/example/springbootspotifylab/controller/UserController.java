@@ -26,8 +26,8 @@ public class UserController {
         return userService.login(user);
     }
 
-    @PutMapping("/user/{username}/{courseId}")
-    public User addCourse(@PathVariable String username, @PathVariable Long courseId){
-        return userService.addCourse(username, courseId);
+    @PutMapping("/user/{username}/{songId}")
+    public User addSong(@PathVariable String username, @PathVariable Long songId) {
+        return userService.addSong(username, songId);
     }
 }

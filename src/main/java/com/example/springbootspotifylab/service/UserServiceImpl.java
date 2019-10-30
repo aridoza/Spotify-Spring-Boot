@@ -1,9 +1,9 @@
 package com.example.springbootspotifylab.service;
 
-import com.example.springbootspotifylab.model.Course;
+import com.example.springbootspotifylab.model.Song;
 import com.example.springbootspotifylab.model.User;
 import com.example.springbootspotifylab.model.UserRole;
-import com.example.springbootspotifylab.repositories.CourseRepository;
+import com.example.springbootspotifylab.repositories.SongRepository;
 import com.example.springbootspotifylab.repositories.UserRepository;
 import com.example.springbootspotifylab.repositories.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,7 @@ public class UserServiceImpl implements UserService {
     private UserRoleRepository userRoleRepository;
 
     @Autowired
-    private CourseRepository courseRepository;
-
+    private SongRepository songRepository;
     @Override
     public User login(User user) {
         return userRepository.login(user.getUsername(), user.getPassword());
@@ -38,11 +37,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addCourse(String username, Long courseId) {
-        Course course = courseRepository.findById(courseId).get();
-        User user = getUser(username);
-        user.addCourse(course);
-
-        return userRepository.save(user);
+    public User addSong(String username, Long songId) {
+        User user = userRepository.findByUsername(username);
+        Song song = songRepository.findById(songId).get();
+        user.addSong(song);
+        userRepository.save(user);
+        return user;
     }
 }

@@ -1,0 +1,7 @@
+package com.example.springbootspotifylab.repositories;
+
+import com.example.springbootspotifylab.model.Song;
+import org.springframework.data.repository.CrudRepository;
+
+public interface SongRepository extends CrudRepository<Song, Long> {
+}

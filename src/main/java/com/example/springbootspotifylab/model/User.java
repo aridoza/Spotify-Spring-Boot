@@ -41,6 +41,11 @@ public class User {
         return songs;
     }
 
+    public List<Song> deleteSong(Song song) {
+        songs.remove(song.getId());
+        return songs;
+    }
+
     @ManyToMany(fetch = FetchType.LAZY,
         cascade = {
             CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
@@ -101,4 +106,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

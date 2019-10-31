@@ -9,13 +9,12 @@ import com.example.springbootspotifylab.repositories.UserRepository;
 import com.example.springbootspotifylab.repositories.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,10 +47,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(User user){
-        if(userRepository.login(user.getUsername(), user.getPassword()) != null){
-            UserDetails userDetails = loadUserByUsername(user.getUsername());
+        User newUser = userRepository.findByUsername(user.getUsername());
+
+        if (newUser != null && bCryptPasswordEncoder.matches(user.getPassword(), newUser.getPassword())) {
+            UserDetails userDetails = loadUserByUsername(newUser.getUsername());
             return jwtUtil.generateToken(userDetails);
         }
+
+//        if(userRepository.login(user.getUsername(), user.getPassword()) != null){
+//            UserDetails userDetails = loadUserByUsername(user.getUsername());
+//            return jwtUtil.generateToken(userDetails);
+//        }
         return null;
     }
 
@@ -88,12 +94,28 @@ public class UserServiceImpl implements UserService {
     public String createUser(User newUser) {
         UserRole userRole = userRoleService.getRole(newUser.getUserRole().getName());
         newUser.setUserRole(userRole);
+        newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+
+        System.out.println(userRole);
 
         if(userRepository.save(newUser) != null){
             UserDetails userDetails = loadUserByUsername(newUser.getUsername());
             return jwtUtil.generateToken(userDetails);
         }
         return null;
+    }
+
+    @Override
+    public HttpStatus deleteById(Long userId) {
+        userRepository.deleteById(userId);
+        return HttpStatus.OK;
+    }
+
+
+
+    @Override
+    public Iterable<User> listUsers() {
+        return userRepository.findAll();
     }
 
     @Override
@@ -104,4 +126,16 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return user;
     }
+
+    @Override
+    public User deleteSongFromUser(String username, Long songId) {
+        User currentUser = userRepository.findByUsername(username);
+        Song song = songRepository.findById(songId).get();
+        currentUser.getSongs().remove(song);
+        //currentUser.deleteSong(song);
+        userRepository.save(currentUser);
+        return currentUser;
+    }
+
+
 }

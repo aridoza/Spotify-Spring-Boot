@@ -22,6 +22,6 @@ public class UserRoleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public UserRole createUserRole(@RequestBody UserRole userRole) {
-        return userRoleService.createRrole(userRole);
+        return userRoleService.createRole(userRole);
     }
 }

@@ -58,9 +58,7 @@ public class UserControllerTest {
     @Before
     public void initUser() {
         user.setId(1L);
-
         song.setId(1L);
-
         user.addSong(song);
     }
 
@@ -150,8 +148,20 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    public void deleteSongFromUser
+    @Test
+    @WithMockUser(username = "batman", password = "bat", roles = {"DBA"})
+    public void deleteSongFromUser_UserController_Success() throws Exception {
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/user/"+user.getUsername()+"/"+song.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "12345");
+
+        when(userService.deleteSongFromUser(any(), any())).thenReturn(user);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk());
+    }
 
 
     private static String createUserInJson (String name, String password, String roleName) {

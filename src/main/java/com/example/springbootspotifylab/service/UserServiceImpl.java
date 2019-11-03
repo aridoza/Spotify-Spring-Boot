@@ -96,8 +96,6 @@ public class UserServiceImpl implements UserService {
         newUser.setUserRole(userRole);
         newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
 
-        System.out.println(userRole);
-
         if(userRepository.save(newUser) != null){
             UserDetails userDetails = loadUserByUsername(newUser.getUsername());
             return jwtUtil.generateToken(userDetails);
